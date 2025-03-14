@@ -9,38 +9,38 @@ on:
 
 jobs:
 
-  # sonar-test-code:
-  #   runs-on: ubuntu-latest
+  sonar-test-code:
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Checkout Repository
-  #       uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v5
-  #       with:
-  #         python-version: "3.9"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.9"
 
-  #     - name: Install Dependencies
-  #       run: |
-  #         cd flask && pip install -r requirements.txt
-  #         python -m pip install --upgrade pip
-  #         pip install pytest pytest-cov
+      - name: Install Dependencies
+        run: |
+          cd flask && pip install -r requirements.txt
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
 
-  #     # - name: Run Tests & Generate Coverage Report
-  #     #   run: |
-  #     #     pytest --cov=. --cov-report=xml #since it doesn't have any tests, this line is commented.
+      # - name: Run Tests & Generate Coverage Report
+      #   run: |
+      #     pytest --cov=. --cov-report=xml #since it doesn't have any tests, this line is commented.
 
-  #     - name: SonarQube Scan
-  #       uses: sonarsource/sonarcloud-github-action@master
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      - name: SonarQube Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build:
 
     runs-on: ubuntu-latest
-    # needs: sonar-test-code
+    needs: sonar-test-code
 
     steps:
     - uses: actions/checkout@v4
