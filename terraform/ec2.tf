@@ -78,7 +78,7 @@ resource "aws_security_group" "nsg_aws" {
 }
 
 resource "aws_instance" "vm_aws" {
-  ami                         = "ami-0cb91c7de36eed2cb"
+  ami                         = "ami-0e2c8caa4b6378d8c"
   instance_type               = "t2.micro"
   subnet_id                   = aws_subnet.subnet.id
   key_name                    = aws_key_pair.key.key_name
@@ -105,15 +105,6 @@ resource "aws_instance" "vm_aws" {
   provisioner "file" {
     source      = "../docker-compose.yml"
     destination = "/home/ubuntu/docker-compose.yml"
-  }
-
-  provisioner "remote-exec" {
-    inline = [
-      "chmod +x /home/ubuntu/docker.sh",
-      "export REACT_APP_VM_IP=${self.public_ip}",
-      "echo \"REACT_APP_VM_IP=${self.public_ip}\" > /home/ubuntu/.env",
-      "/home/ubuntu/docker.sh"
-    ]
   }
 }
 

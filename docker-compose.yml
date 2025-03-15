@@ -1,6 +1,6 @@
 services:
   flask:
-    image: raissaglaucie34/my_flask_image  
+    image: raissaglaucie34/my_flask_image 
     container_name: flask
     expose:
       - "5000"  # Expose Flask internally, to the others containers
@@ -25,18 +25,28 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      retries: 3
+      timeout: 10s
+      start_period: 10s
 
   react:
     image: raissaglaucie34/my_react_image  
     container_name: react
+    # build:
+    #   context: .
+      # args:
+      #   REACT_APP_API_URL: ${EC2_IP}  
     expose:
       - "80"  
     ports:
       - "80:80" 
     networks:
       - my_network  
-    env_file:
-      - /home/ubuntu/.env 
+    # env_file:
+    #   - ./docker-compose.env
 
   postgres:
     image: postgres:13 
@@ -55,4 +65,4 @@ networks:
   my_network: 
 
 volumes:
-  postgres-data: 
+  postgres-data:

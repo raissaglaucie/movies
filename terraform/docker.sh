@@ -23,12 +23,9 @@ docker run hello-world
 sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 
+cd /home/ubuntu/
 
 docker pull raissaglaucie34/my_flask_image_local
 docker pull raissaglaucie34/my_react_image_local
 
-
-cd /home/ubuntu/
-
-
-docker-compose up -d
+#docker-compose up --build -d
