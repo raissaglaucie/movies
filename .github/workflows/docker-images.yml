@@ -27,10 +27,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest pytest-cov
 
-      # - name: Run Tests & Generate Coverage Report
-      #   run: |
-      #     pytest --cov=. --cov-report=xml #since it doesn't have any tests, this line is commented.
-
       - name: SonarQube Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
@@ -45,18 +41,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set secrets as environment variables
-      run: |
-        echo "POSTGRES_USER=${{ secrets.POSTGRES_USER }}" >> $GITHUB_ENV
-        echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> $GITHUB_ENV
-
-    - name: Build and push the Docker images 
-      run: bash scripts/build-docker.sh #BE image and #FED image  
-      env:
-        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
-        POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-
     - name: Set up Terraform
       uses: hashicorp/setup-terraform@v2
       with:
@@ -67,7 +51,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: us-east-2
+        aws-region: us-east-1
 
     - name: Verify AWS Authentication
       run: |
@@ -95,14 +79,28 @@ jobs:
         echo "EC2_IP=$(terraform output -raw ec2_public_ip)" >> $GITHUB_ENV
       shell: bash
 
+    - name: Set environment variable
+      run: |
+        echo "VITE_API_URL=http://$EC2_IP:5000" >> $GITHUB_ENV
+
+    - name: Verify environment variable
+      run: |
+        echo "The API URL is: $VITE_API_URL"
+      env:
+        EC2_IP: ${{ env.EC2_IP }}
+
     - name: SSH and Docker compose
       run: |
-        pwd
+        printf "%s%s" "VITE_API_URL=" "$VITE_API_URL" > ./nginx/reactApp/.env
+        bash scripts/build-docker.sh #BE image and #FED image  
         ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -i ~/.private/aws_key.pem ubuntu@${{ env.EC2_IP }} << EOF
+          pwd
           cd /home/ubuntu/
-          EC2_IP="${{ env.EC2_IP }}"        
           bash docker.sh
-          docker-compose up -d
+          docker-compose up
         EOF
       env:
         EC2_IP: ${{ env.EC2_IP }}
+        DOCKER_PASSWORD: ${{secrets.DOCKER_PASSWORD}}
+        POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+        POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}

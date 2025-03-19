@@ -31,14 +31,10 @@ services:
       retries: 3
       timeout: 10s
       start_period: 10s
-
+      
   react:
     image: raissaglaucie34/my_react_image  
     container_name: react
-    # build:
-    #   context: .
-      # args:
-      #   REACT_APP_API_URL: ${EC2_IP}  
     expose:
       - "80"  
     ports:
@@ -46,7 +42,7 @@ services:
     networks:
       - my_network  
     # env_file:
-    #   - ./docker-compose.env
+    #   - /home/ubuntu/docker-compose.env
 
   postgres:
     image: postgres:13 

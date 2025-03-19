@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-//const API_URL = 'http://flask:5000';
-const API_URL = 'http://127.0.0.1:5000';
+console.log("All Vite Env Variables:", import.meta.env);
+const API_URL = import.meta.env.VITE_API_URL
+// const API_URL = 'http://127.0.0.1:5000';
 //const API_URL = process.env.REACT_APP_VM_IP;
 
 function App() {
