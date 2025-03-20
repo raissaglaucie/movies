@@ -6,6 +6,12 @@ Visit the live application at: [Click Here](http://3.144.120.244)
 
 ---
 
+### Diagram
+
+  <img src="nginx/reactApp/src/diagram.png" alt="CI/CD Pipeline Workflow">
+
+
+
 ## 🚀 Getting Started
 
 ### Prerequisites
