@@ -43,7 +43,11 @@ git clone https://github.com/raissaglaucie/movies
 Before proceeding, update the `.env` file inside the nginx/reactApp folder.
 
 This file is automatically populated by the CI/CD pipeline.
-Since we are manually uploading our code, update it yourself:
+Since we are manually uploading our code, update it yourself to:
+
+```
+VITE_API_URL=http://127.0.0.1:5000
+```
 
 Create the following environment variables
 
